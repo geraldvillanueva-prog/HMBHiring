@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Careers at HMB — Application Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --paper:#FAF7F0;
+    --paper-2:#F1EBDC;
+    --ink:#1C1B19;
+    --ink-soft:#6B6356;
+    --ledger:#1F4D3D;
+    --ledger-dark:#143226;
+    --gold:#B6862F;
+    --gold-soft:#E4C98C;
+    --rule:#D8CFBC;
+    --red-ink:#A23B2E;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --serif: 'Fraunces', Georgia, 'Iowan Old Style', serif;
+    --sans: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    background-image:
+      repeating-linear-gradient(transparent, transparent 35px, rgba(31,77,61,0.05) 36px),
+      linear-gradient(180deg, var(--paper-2), var(--paper) 220px);
+    min-height:100vh;
+  }
+  a{color:var(--ledger);}
+  .hidden{display:none !important;}
+  button{font-family:var(--sans);cursor:pointer;}
+  input,select,textarea{font-family:var(--sans);}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+
+  /* progress bar */
+  .progress-track{position:sticky;top:0;height:4px;background:var(--rule);z-index:50;}
+  .progress-fill{height:100%;width:0%;background:var(--gold);transition:width .35s ease;}
+
+  /* masthead */
+  .masthead{max-width:920px;margin:0 auto;padding:40px 24px 8px;}
+  .eyebrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+  .eyebrow-text{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .form-no{font-family:var(--mono);font-size:12px;color:var(--ink-soft);border:1px solid var(--rule);padding:3px 8px;border-radius:3px;}
+  h1.title{font-family:var(--serif);font-weight:600;font-size:clamp(28px,4vw,40px);margin:14px 0 8px;color:var(--ledger-dark);line-height:1.1;}
+  .subtitle{color:var(--ink-soft);font-size:15px;line-height:1.6;max-width:62ch;margin:0;}
+
+  /* layout */
+  .layout{max-width:920px;margin:0 auto;padding:28px 24px 80px;display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:start;}
+  @media (max-width:760px){ .layout{grid-template-columns:1fr;padding:20px 16px 60px;} }
+
+  /* rail */
+  .rail{display:flex;flex-direction:column;position:sticky;top:24px;}
+  @media (max-width:760px){ .rail{display:none;} }
+  .rail-item{display:flex;gap:12px;position:relative;padding-bottom:34px;}
+  .rail-item:last-child{padding-bottom:0;}
+  .rail-line{position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--rule);}
+  .rail-item:last-child .rail-line{display:none;}
+  .rail-line-fill{position:absolute;top:0;left:0;width:100%;height:0%;background:var(--gold);transition:height .3s ease;}
+  .rail-badge{width:28px;height:28px;border-radius:50%;border:2px solid var(--rule);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;color:var(--ink-soft);background:var(--paper);flex-shrink:0;z-index:1;transition:all .2s ease;}
+  .rail-item.active .rail-badge{border-color:var(--ledger);background:var(--ledger);color:var(--paper);}
+  .rail-item.done .rail-badge{border-color:var(--gold);background:var(--gold);color:var(--paper-2);}
+  .rail-labels{padding-top:3px;}
+  .rail-step-label{font-size:13px;font-weight:600;color:var(--ink-soft);}
+  .rail-item.active .rail-step-label{color:var(--ledger-dark);}
+  .rail-step-sub{font-size:11px;color:var(--ink-soft);opacity:.8;}
+
+  /* mobile stepper */
+  .mobile-stepper{display:none;margin-bottom:18px;}
+  @media (max-width:760px){ .mobile-stepper{display:block;} }
+  .mobile-stepper-label{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+  .mobile-segments{display:flex;gap:6px;}
+  .mobile-segment{flex:1;height:4px;background:var(--rule);border-radius:2px;overflow:hidden;}
+  .mobile-segment.filled{background:var(--gold);}
+
+  /* sheet (paper card) */
+  .sheet{background:#fff;border:1px solid var(--rule);border-radius:6px;box-shadow:0 1px 0 var(--rule), 0 14px 30px -18px rgba(28,27,25,.25);position:relative;overflow:hidden;}
+  .sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;
+    background-image: repeating-linear-gradient(90deg, var(--paper) 0 8px, transparent 8px 16px);
+    background-color:var(--gold-soft);}
+  .sheet-inner{padding:32px 28px 24px;}
+  @media (max-width:760px){ .sheet-inner{padding:24px 18px 18px;} }
+
+  .step-title{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ledger-dark);margin:0 0 4px;}
+  .step-desc{font-size:13.5px;color:var(--ink-soft);margin:0 0 22px;}
+
+  .field{margin-bottom:20px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:560px){ .field-row{grid-template-columns:1fr;} }
+  label.field-label{display:block;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:7px;}
+  .req-mark{color:var(--red-ink);margin-left:2px;}
+  .field input[type=text],
+  .field input[type=tel],
+  .field input[type=email],
+  .field input[type=number],
+  .field input[type=month],
+  .field select,
+  .field textarea{
+    width:100%;border:none;border-bottom:2px solid var(--rule);background:transparent;
+    padding:8px 2px;font-size:15px;color:var(--ink);transition:border-color .15s ease;
+  }
+  .field textarea{resize:vertical;min-height:70px;font-family:var(--sans);}
+  .field input:focus,.field select:focus,.field textarea:focus{border-bottom-color:var(--ledger);outline:none;}
+  .field input.invalid,.field select.invalid,.field textarea.invalid{border-bottom-color:var(--red-ink);}
+  .field-hint{font-size:12px;color:var(--ink-soft);margin-top:5px;}
+  .field-error{font-size:12.5px;color:var(--red-ink);margin-top:5px;display:none;}
+  .field-error.show{display:block;}
+  .salary-wrap{position:relative;}
+  .salary-wrap .peso{position:absolute;left:0;bottom:9px;color:var(--ink-soft);font-size:15px;}
+  .salary-wrap input{padding-left:16px !important;}
+
+  .check-row{display:flex;align-items:flex-start;gap:9px;margin-top:8px;font-size:13.5px;color:var(--ink-soft);}
+  .check-row input{accent-color:var(--gold);width:16px;height:16px;margin-top:2px;flex-shrink:0;}
+
+  .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;}
+  @media (max-width:560px){ .checkbox-grid{grid-template-columns:1fr;} }
+  .checkbox-item{display:flex;align-items:center;gap:8px;font-size:14px;}
+  .checkbox-item input{accent-color:var(--ledger);width:16px;height:16px;flex-shrink:0;}
+
+  .radio-pair{display:flex;gap:18px;}
+  .radio-item{display:flex;align-items:center;gap:7px;font-size:14.5px;}
+  .radio-item input{accent-color:var(--ledger);width:16px;height:16px;}
+
+  /* upload */
+  .upload-box{border:2px dashed var(--rule);border-radius:6px;padding:24px;text-align:center;position:relative;transition:border-color .15s;}
+  .upload-box.has-file{border-style:solid;border-color:var(--gold);background:#FFFBF2;}
+  .upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+  .upload-icon{font-family:var(--serif);font-size:26px;color:var(--gold);}
+  .upload-text{font-size:13.5px;color:var(--ink-soft);margin-top:6px;}
+  .upload-filename{font-size:13.5px;color:var(--ledger-dark);font-weight:600;margin-top:4px;}
+
+  .consent-box{background:var(--paper-2);border:1px solid var(--rule);border-radius:5px;padding:16px;font-size:13px;color:var(--ink-soft);line-height:1.6;margin-top:22px;}
+
+  /* actions */
+  .step-actions{display:flex;justify-content:space-between;align-items:center;padding:18px 28px 26px;border-top:1px solid var(--rule);background:var(--paper-2);}
+  @media (max-width:760px){ .step-actions{padding:16px 18px 22px;} }
+  .btn{border-radius:4px;padding:11px 22px;font-size:14px;font-weight:600;border:1.5px solid transparent;transition:all .15s ease;}
+  .btn-ghost{background:transparent;border-color:var(--rule);color:var(--ink-soft);}
+  .btn-ghost:hover{border-color:var(--ledger);color:var(--ledger-dark);}
+  .btn-primary{background:var(--ledger);color:var(--paper);box-shadow:0 2px 0 var(--ledger-dark);}
+  .btn-primary:hover{background:var(--ledger-dark);}
+  .btn-primary:active{transform:translateY(2px);box-shadow:none;}
+  .btn-primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;}
+  .btn-gold{background:var(--gold);color:#fff;box-shadow:0 2px 0 #8d6722;}
+  .btn-gold:hover{background:#9a7228;}
+
+  /* confirmation */
+  .confirmation{max-width:560px;margin:60px auto;padding:0 24px;text-align:center;}
+  .stamp{width:148px;height:148px;border-radius:50%;border:3px solid var(--gold);outline:1.5px dashed var(--gold);outline-offset:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 28px;transform:rotate(-9deg);color:var(--gold);}
+  @media (prefers-reduced-motion: reduce){ .stamp{transform:none;} }
+  .stamp-word{font-family:var(--serif);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:15px;}
+  .stamp-ref{font-family:var(--mono);font-size:11px;margin-top:6px;}
+  .confirmation h2{font-family:var(--serif);font-size:26px;color:var(--ledger-dark);margin:0 0 10px;}
+  .confirmation p{color:var(--ink-soft);font-size:14.5px;line-height:1.6;}
+  .ref-display{font-family:var(--mono);background:var(--paper-2);border:1px solid var(--rule);border-radius:4px;padding:10px 14px;display:inline-block;margin:14px 0;font-size:14px;color:var(--ledger-dark);}
+
+  /* footer */
+  .site-footer{max-width:920px;margin:0 auto;padding:0 24px 50px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .privacy-note{font-size:11.5px;color:var(--ink-soft);max-width:60ch;line-height:1.6;}
+  .staff-link{background:none;border:none;color:var(--ink-soft);font-size:11.5px;text-decoration:underline;padding:0;}
+
+  /* overlays (staff gate / panel) */
+  .overlay{position:fixed;inset:0;background:var(--paper);z-index:100;overflow-y:auto;}
+  .overlay-inner{max-width:980px;margin:0 auto;padding:40px 24px 80px;}
+  .gate-card{max-width:380px;margin:80px auto;text-align:center;}
+  .gate-card h2{font-family:var(--serif);color:var(--ledger-dark);}
+  .gate-card input{width:100%;border:none;border-bottom:2px solid var(--rule);background:transparent;padding:10px 2px;font-size:16px;text-align:center;letter-spacing:.1em;margin:18px 0;}
+  .panel-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:30px;}
+  .panel-header h1{font-family:var(--serif);font-size:24px;color:var(--ledger-dark);margin:0;}
+  .panel-section{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:22px;margin-bottom:24px;}
+  .panel-section h3{font-family:var(--serif);font-size:17px;margin:0 0 4px;color:var(--ledger-dark);}
+  .panel-section .sub{font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;}
+  .qr-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  .qr-row input{flex:1;min-width:220px;border:1px solid var(--rule);border-radius:4px;padding:9px 10px;font-size:13.5px;}
+  #qrOutput{margin-top:16px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  #qrOutput img,#qrOutput canvas{border:8px solid #fff;box-shadow:0 0 0 1px var(--rule);}
+  .ledger-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .ledger-table th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);border-bottom:1.5px solid var(--rule);padding:8px 8px;}
+  .ledger-table td{padding:10px 8px;border-bottom:1px solid var(--rule);vertical-align:top;}
+  .ledger-table tr.app-row{cursor:pointer;}
+  .ledger-table tr.app-row:hover{background:var(--paper-2);}
+  .ledger-empty{font-size:13.5px;color:var(--ink-soft);text-align:center;padding:30px 0;}
+  .detail-row td{background:var(--paper-2);}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;font-size:13px;}
+  @media (max-width:600px){ .detail-grid{grid-template-columns:1fr;} }
+  .detail-grid div b{display:block;color:var(--ink-soft);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;}
+  .table-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+  .small-btn{font-size:12.5px;padding:7px 13px;}
+</style>
+</head>
+<body>
+
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<div id="appView">
+  <div class="masthead">
+    <div class="eyebrow">
+      <span class="eyebrow-text">HMB Business Consultancy Services Corp. · Careers</span>
+      <span class="form-no">Form No. HMB-HR-01</span>
+    </div>
+    <h1 class="title">Join the team at HMB</h1>
+    <p class="subtitle">We're a tax and business consultancy firm looking for people who care about getting the details right. Fill out the form below — it takes about five minutes — and we'll be in touch if you're a fit for the next stage.</p>
+  </div>
+
+  <main class="layout">
+    <nav class="rail" id="rail"></nav>
+
+    <div>
+      <div class="mobile-stepper">
+        <div class="mobile-stepper-label" id="mobileStepLabel">Step 1 of 4 — Personal Details</div>
+        <div class="mobile-segments" id="mobileSegments"></div>
+      </div>
+
+      <section class="sheet">
+        <div class="sheet-inner">
+          <form id="appForm" novalidate>
+
+            <!-- STEP 0: PERSONAL DETAILS -->
+            <div class="step" data-step="0">
+              <h2 class="step-title">Personal details</h2>
+              <p class="step-desc">Let's start with the basics.</p>
+
+              <div class="field">
+                <label class="field-label">Full name<span class="req-mark">*</span></label>
+                <input type="text" id="fullName" required autocomplete="name">
+                <div class="field-error">Please enter your full name.</div>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Current address<span class="req-mark">*</span></label>
+                <textarea id="address" required rows="2"></textarea>
+                <div class="field-error">Please enter your current address.</div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label">Active mobile number<span class="req-mark">*</span></label>
+                  <input type="tel" id="mobile" required placeholder="09XX XXX XXXX" autocomplete="tel">
+                  <div class="field-hint">Format: 09XXXXXXXXX or +639XXXXXXXXX</div>
+                  <div class="field-error">Please enter a valid PH mobile number.</div>
+                </div>
+                <div class="field">
+                  <label class="field-label">Active email address<span class="req-mark">*</span></label>
+                  <input type="email" id="email" required autocomplete="email">
+                  <div class="field-error">Please enter a valid email address.</div>
+                </div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label">Position applied for<span class="req-mark">*</span></label>
+                  <select id="position" required>
+                    <option value="">Select a position</option>
+                    <option>Tax Associate</option>
+                    <option>Accountant</option>
+                    <option>Bookkeeper</option>
+                    <option>Audit Associate</option>
+                    <option>Admin & Client Support</option>
+                    <option>IT Support / Developer</option>
+                    <option>HR Associate</option>
+                    <option>Other</option>
+                  </select>
+                  <div class="field-error">Please select a position.</div>
+                </div>
+                <div class="field" id="positionOtherWrap" style="display:none;">
+                  <label class="field-label">Please specify</label>
+                  <input type="text" id="positionOther">
+                </div>
+              </div>
+
+              <div class="field" style="max-width:300px;">
+                <label class="field-label">Expected monthly salary<span class="req-mark">*</span></label>
+                <div class="salary-wrap">
+                  <span class="peso">₱</span>
+                  <input type="number" id="expectedSalary" required min="0" step="500">
+                </div>
+                <div class="field-error">Please enter your expected salary.</div>
+              </div>
+            </div>
+
+            <!-- STEP 1: EMPLOYMENT -->
+            <div class="step" data-step="1">
+              <h2 class="step-title">Current / most recent employment</h2>
+              <p class="step-desc">If this is your first job, you can write "N/A" for company name.</p>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label">Company name<span class="req-mark">*</span></label>
+                  <input type="text" id="company" required>
+                  <div class="field-error">Please enter a company name.</div>
+                </div>
+                <div class="field">
+                  <label class="field-label">Position<span class="req-mark">*</span></label>
+                  <input type="text" id="empPosition" required>
+                  <div class="field-error">Please enter your position.</div>
+                </div>
+              </div>
+
+              <div class="field" style="max-width:300px;">
+                <label class="field-label">Current monthly salary<span class="req-mark">*</span></label>
+                <div class="salary-wrap">
+                  <span class="peso">₱</span>
+                  <input type="number" id="currentSalary" required min="0" step="500">
+                </div>
+                <div class="field-error">Please enter your current salary.</div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label">Start date<span class="req-mark">*</span></label>
+                  <input type="month" id="startDate" required>
+                  <div class="field-error">Please enter a start date.</div>
+                </div>
+                <div class="field">
+                  <label class="field-label">End date<span class="req-mark">*</span></label>
+                  <input type="month" id="endDate" required>
+                  <div class="check-row">
+                    <input type="checkbox" id="currentlyWorking">
+                    <label for="currentlyWorking">I currently work here (Present)</label>
+                  </div>
+                  <div class="field-error">Please enter an end date, or check "Present."</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: SCREENING -->
+            <div class="step" data-step="2">
+              <h2 class="step-title">A few quick questions</h2>
+              <p class="step-desc">Helps us understand your background before we reach out.</p>
+
+              <div class="field">
+                <label class="field-label">Years of experience related to this position<span class="req-mark">*</span></label>
+                <select id="yearsExperience" required>
+                  <option value="">Select range</option>
+                  <option>Less than 1 year</option>
+                  <option>1–2 years</option>
+                  <option>3–5 years</option>
+                  <option>6–10 years</option>
+                  <option>More than 10 years</option>
+                </select>
+                <div class="field-error">Please select your years of experience.</div>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Software, tools, or systems you're proficient in<span class="req-mark">*</span></label>
+                <div class="checkbox-grid" id="toolsGrid">
+                  <label class="checkbox-item"><input type="checkbox" value="MS Excel"> MS Excel</label>
+                  <label class="checkbox-item"><input type="checkbox" value="MS Word / Office"> MS Word / Office</label>
+                  <label class="checkbox-item"><input type="checkbox" value="QuickBooks"> QuickBooks</label>
+                  <label class="checkbox-item"><input type="checkbox" value="Xero"> Xero</label>
+                  <label class="checkbox-item"><input type="checkbox" value="SAP"> SAP</label>
+                  <label class="checkbox-item"><input type="checkbox" value="BIR eFPS / eBIRForms"> BIR eFPS / eBIRForms</label>
+                  <label class="checkbox-item"><input type="checkbox" value="Zoho Books"> Zoho Books</label>
+                  <label class="checkbox-item"><input type="checkbox" value="Google Workspace"> Google Workspace</label>
+                </div>
+                <div class="check-row" style="margin-top:12px;">
+                  <input type="checkbox" id="toolsOtherCheck">
+                  <label for="toolsOtherCheck">Other (please specify)</label>
+                </div>
+                <input type="text" id="toolsOther" style="display:none;margin-top:8px;" placeholder="e.g. Canva, SAP B1, Power BI">
+                <div class="field-error" id="toolsError">Please select at least one tool.</div>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Key strengths relevant to the role<span class="req-mark">*</span></label>
+                <textarea id="strengths" required rows="3"></textarea>
+                <div class="field-error">Please share a few of your key strengths.</div>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label class="field-label">Are you currently employed?<span class="req-mark">*</span></label>
+                  <div class="radio-pair">
+                    <label class="radio-item"><input type="radio" name="currentlyEmployed" value="Yes" required> Yes</label>
+                    <label class="radio-item"><input type="radio" name="currentlyEmployed" value="No"> No</label>
+                  </div>
+                  <div class="field-error" id="employedError">Please select an option.</div>
+                </div>
+                <div class="field">
+                  <label class="field-label">How soon can you start?<span class="req-mark">*</span></label>
+                  <select id="startAvailability" required>
+                    <option value="">Select timeframe</option>
+                    <option>Immediately</option>
+                    <option>Within 1 week</option>
+                    <option>Within 2 weeks</option>
+                    <option>Within 1 month</option>
+                    <option>More than 1 month</option>
+                  </select>
+                  <div class="field-error">Please select a timeframe.</div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Do you have ongoing job applications with other employers?<span class="req-mark">*</span></label>
+                <div class="radio-pair">
+                  <label class="radio-item"><input type="radio" name="otherApplications" value="Yes" required> Yes</label>
+                  <label class="radio-item"><input type="radio" name="otherApplications" value="No"> No</label>
+                </div>
+                <div class="field-error" id="otherAppsError">Please select an option.</div>
+                <input type="text" id="otherApplicationsDetail" style="display:none;margin-top:10px;" placeholder="With which companies? (optional)">
+              </div>
+            </div>
+
+            <!-- STEP 3: RESUME + CONSENT -->
+            <div class="step" data-step="3">
+              <h2 class="step-title">Resume & consent</h2>
+              <p class="step-desc">Last step — upload your resume and confirm the details below.</p>
+
+              <div class="field">
+                <label class="field-label">Upload resume (PDF or Word, max 4MB)<span class="req-mark">*</span></label>
+                <div class="upload-box" id="uploadBox">
+                  <input type="file" id="resumeFile" accept=".pdf,.doc,.docx">
+                  <div class="upload-icon">↑</div>
+                  <div class="upload-text" id="uploadText">Tap to choose a file, or drag it here</div>
+                  <div class="upload-filename" id="uploadFilename"></div>
+                </div>
+                <div class="field-error" id="resumeError">Please attach your resume.</div>
+              </div>
+
+              <div class="consent-box">
+                <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;">
+                  <input type="checkbox" id="consent" style="accent-color:var(--gold);width:16px;height:16px;margin-top:2px;flex-shrink:0;">
+                  <span>I certify that the information provided is true and correct. I authorize the company to process my personal information for recruitment purposes in accordance with the Data Privacy Act.<span class="req-mark">*</span></span>
+                </label>
+              </div>
+              <div class="field-error" id="consentError">Please confirm the data privacy consent to submit.</div>
+            </div>
+
+          </form>
+        </div>
+
+        <div class="step-actions">
+          <button type="button" class="btn btn-ghost" id="backBtn">Back</button>
+          <div>
+            <button type="button" class="btn btn-primary" id="nextBtn">Continue</button>
+            <button type="button" class="btn btn-primary hidden" id="submitBtn">Submit application</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p class="privacy-note">Your information is collected solely for recruitment purposes at HMB Business Consultancy Services Corp. and will be processed in accordance with the Data Privacy Act.</p>
+    <button class="staff-link" id="staffLink">Staff access</button>
+  </footer>
+</div>
+
+<!-- CONFIRMATION -->
+<div class="confirmation hidden" id="confirmation">
+  <div class="stamp">
+    <div class="stamp-word">Received</div>
+    <div class="stamp-ref" id="stampRefMini"></div>
+  </div>
+  <h2>Application received</h2>
+  <p>Thanks for applying to HMB. Please keep this reference number for your records.</p>
+  <div class="ref-display" id="refDisplay"></div>
+  <p>We'll reach out by email or mobile number if you're shortlisted for the next stage of the process.</p>
+  <button class="btn btn-ghost" id="resetBtn" style="margin-top:10px;">Submit another application</button>
+</div>
+
+<!-- STAFF GATE -->
+<div class="overlay hidden" id="staffGate">
+  <div class="overlay-inner">
+    <div class="gate-card">
+      <h2>Staff access</h2>
+      <p style="color:var(--ink-soft);font-size:13.5px;">Enter the staff passcode to view submitted applications and generate the QR code.</p>
+      <input type="password" id="gatePasscode" placeholder="Passcode">
+      <div class="field-error" id="gateError" style="text-align:center;">Incorrect passcode.</div>
+      <div style="margin-top:10px;display:flex;gap:10px;justify-content:center;">
+        <button class="btn btn-ghost" id="gateCancel">Back to form</button>
+        <button class="btn btn-primary" id="gateSubmit">Enter</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STAFF PANEL -->
+<div class="overlay hidden" id="staffPanel">
+  <div class="overlay-inner">
+    <div class="panel-header">
+      <h1>Recruitment dashboard</h1>
+      <button class="btn btn-ghost" id="closeStaff">Back to form</button>
+    </div>
+
+    <div class="panel-section">
+      <h3>QR code for ads</h3>
+      <p class="sub">Once you've published this page and have its live web link, paste it below to generate a printable QR code for flyers, posts, or job ads.</p>
+      <div class="qr-row">
+        <input type="text" id="qrUrlInput" placeholder="https://link/public/artifacts/your-published-link">
+        <button class="btn btn-gold" id="generateQrBtn">Generate QR</button>
+      </div>
+      <div id="qrOutput"></div>
+      <button class="btn btn-ghost small-btn hidden" id="downloadQrBtn" style="margin-top:12px;">Download QR as PNG</button>
+    </div>
+
+    <div class="panel-section">
+      <div class="table-actions">
+        <div>
+          <h3 style="margin-bottom:2px;">Applications ledger</h3>
+          <p class="sub" id="ledgerCount" style="margin-bottom:0;">Loading…</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost small-btn" id="refreshBtn">Refresh</button>
+          <button class="btn btn-ghost small-btn" id="exportCsvBtn">Export CSV</button>
+        </div>
+      </div>
+      <div id="ledgerWrap">
+        <table class="ledger-table" id="ledgerTable">
+          <thead>
+            <tr><th>Ref #</th><th>Name</th><th>Position</th><th>Mobile</th><th>Applied</th></tr>
+          </thead>
+          <tbody id="ledgerBody"></tbody>
+        </table>
+        <div class="ledger-empty hidden" id="ledgerEmpty">No applications received yet.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STAFF_PASSCODE = "HMB2026"; // change this before publishing
+
+  const STEPS = [
+    {label:"Personal Details", sub:"Who you are"},
+    {label:"Employment History", sub:"Where you work now"},
+    {label:"Screening Questions", sub:"A bit more about you"},
+    {label:"Resume & Consent", sub:"Final step"}
+  ];
+
+  let currentStep = 0;
+  let resumeData = null; // {fileName, fileType, fileSizeKB, dataUrl}
+
+  const els = {
+    rail: document.getElementById('rail'),
+    mobileLabel: document.getElementById('mobileStepLabel'),
+    mobileSegments: document.getElementById('mobileSegments'),
+    progressFill: document.getElementById('progressFill'),
+    backBtn: document.getElementById('backBtn'),
+    nextBtn: document.getElementById('nextBtn'),
+    submitBtn: document.getElementById('submitBtn'),
+    appView: document.getElementById('appView'),
+    confirmation: document.getElementById('confirmation'),
+  };
+
+  function buildRail(){
+    els.rail.innerHTML = STEPS.map((s,i)=>`
+      <div class="rail-item" data-i="${i}">
+        <div class="rail-line"><div class="rail-line-fill"></div></div>
+        <div class="rail-badge">${i+1}</div>
+        <div class="rail-labels">
+          <div class="rail-step-label">${s.label}</div>
+          <div class="rail-step-sub">${s.sub}</div>
+        </div>
+      </div>`).join('');
+    els.mobileSegments.innerHTML = STEPS.map(()=>`<div class="mobile-segment"></div>`).join('');
+  }
+  buildRail();
+
+  function renderProgress(){
+    const pct = (currentStep/(STEPS.length-1))*100;
+    els.progressFill.style.width = pct + "%";
+
+    document.querySelectorAll('.rail-item').forEach((item,i)=>{
+      item.classList.toggle('active', i===currentStep);
+      item.classList.toggle('done', i<currentStep);
+      const fill = item.querySelector('.rail-line-fill');
+      if(fill) fill.style.height = (i<currentStep) ? '100%' : '0%';
+    });
+
+    els.mobileLabel.textContent = `Step ${currentStep+1} of ${STEPS.length} — ${STEPS[currentStep].label}`;
+    document.querySelectorAll('.mobile-segment').forEach((seg,i)=>{
+      seg.classList.toggle('filled', i<=currentStep);
+    });
+
+    document.querySelectorAll('.step').forEach(stepEl=>{
+      stepEl.style.display = (parseInt(stepEl.dataset.step)===currentStep) ? 'block' : 'none';
+    });
+
+    els.backBtn.style.visibility = currentStep===0 ? 'hidden' : 'visible';
+    const isLast = currentStep===STEPS.length-1;
+    els.nextBtn.classList.toggle('hidden', isLast);
+    els.submitBtn.classList.toggle('hidden', !isLast);
+
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  renderProgress();
+
+  function showError(input, errEl, show){
+    if(input) input.classList.toggle('invalid', show);
+    if(errEl) errEl.classList.toggle('show', show);
+  }
+
+  function validateStep(i){
+    let ok = true;
+    if(i===0){
+      ok &= req('fullName'); ok &= req('address');
+      ok &= validatePattern('mobile', /^(\+63|0)9\d{9}$/);
+      ok &= validatePattern('email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+      ok &= req('position');
+      ok &= req('expectedSalary');
+    } else if(i===1){
+      ok &= req('company'); ok &= req('empPosition'); ok &= req('currentSalary');
+      ok &= req('startDate');
+      const currentlyWorking = document.getElementById('currentlyWorking').checked;
+      const endDate = document.getElementById('endDate');
+      const endErr = endDate.closest('.field').querySelector('.field-error');
+      if(!currentlyWorking){
+        const valid = !!endDate.value;
+        showError(endDate, endErr, !valid); ok &= valid;
+      } else { showError(endDate, endErr, false); }
+    } else if(i===2){
+      ok &= req('yearsExperience');
+      const toolsChecked = Array.from(document.querySelectorAll('#toolsGrid input:checked')).length>0;
+      const toolsOtherCheck = document.getElementById('toolsOtherCheck').checked;
+      const toolsOtherVal = document.getElementById('toolsOther').value.trim();
+      const toolsValid = toolsChecked || (toolsOtherCheck && toolsOtherVal);
+      document.getElementById('toolsError').classList.toggle('show', !toolsValid); ok &= toolsValid;
+      ok &= req('strengths');
+      const emp = document.querySelector('input[name=currentlyEmployed]:checked');
+      document.getElementById('employedError').classList.toggle('show', !emp); ok &= !!emp;
+      ok &= req('startAvailability');
+      const oa = document.querySelector('input[name=otherApplications]:checked');
+      document.getElementById('otherAppsError').classList.toggle('show', !oa); ok &= !!oa;
+    } else if(i===3){
+      const resumeErr = document.getElementById('resumeError');
+      const resumeValid = !!resumeData;
+      resumeErr.classList.toggle('show', !resumeValid); ok &= resumeValid;
+      const consent = document.getElementById('consent');
+      const consentErr = document.getElementById('consentError');
+      consentErr.classList.toggle('show', !consent.checked); ok &= consent.checked;
+    }
+    return !!ok;
+  }
+
+  function req(id){
+    const el = document.getElementById(id);
+    const errEl = el.closest('.field').querySelector('.field-error');
+    const valid = el.value.trim().length>0;
+    showError(el, errEl, !valid);
+    return valid;
+  }
+  function validatePattern(id, regex){
+    const el = document.getElementById(id);
+    const errEl = el.closest('.field').querySelector('.field-error');
+    const valid = regex.test(el.value.trim());
+    showError(el, errEl, !valid);
+    return valid;
+  }
+
+  els.nextBtn.addEventListener('click', ()=>{
+    if(validateStep(currentStep)){
+      currentStep++;
+      renderProgress();
+    } else {
+      const firstInvalid = document.querySelector('.step[data-step="'+currentStep+'"] .invalid, .step[data-step="'+currentStep+'"] .field-error.show');
+      if(firstInvalid) firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  });
+  els.backBtn.addEventListener('click', ()=>{ currentStep--; renderProgress(); });
+
+  document.querySelectorAll('.rail-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const i = parseInt(item.dataset.i);
+      if(i < currentStep){ currentStep = i; renderProgress(); }
+    });
+  });
+
+  // conditional fields
+  document.getElementById('position').addEventListener('change', e=>{
+    document.getElementById('positionOtherWrap').style.display = e.target.value==='Other' ? 'block' : 'none';
+  });
+  document.getElementById('currentlyWorking').addEventListener('change', e=>{
+    const endDate = document.getElementById('endDate');
+    endDate.disabled = e.target.checked;
+    if(e.target.checked) endDate.value = '';
+  });
+  document.getElementById('toolsOtherCheck').addEventListener('change', e=>{
+    document.getElementById('toolsOther').style.display = e.target.checked ? 'block' : 'none';
+  });
+  document.querySelectorAll('input[name=otherApplications]').forEach(r=>{
+    r.addEventListener('change', e=>{
+      document.getElementById('otherApplicationsDetail').style.display = e.target.value==='Yes' ? 'block' : 'none';
+    });
+  });
+
+  // resume upload
+  const resumeInput = document.getElementById('resumeFile');
+  const uploadBox = document.getElementById('uploadBox');
+  resumeInput.addEventListener('change', ()=>{
+    const file = resumeInput.files[0];
+    if(!file) return;
+    const sizeKB = Math.round(file.size/1024);
+    if(file.size > 4*1024*1024){
+      document.getElementById('uploadText').textContent = "That file is too large (max 4MB). Please email it to careers@hmbconsultancy.ph instead, then continue.";
+      resumeData = null;
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      resumeData = {fileName:file.name, fileType:file.type, fileSizeKB:sizeKB, dataUrl:reader.result};
+      uploadBox.classList.add('has-file');
+      document.getElementById('uploadText').textContent = "File attached:";
+      document.getElementById('uploadFilename').textContent = `${file.name} (${sizeKB} KB)`;
+      document.getElementById('resumeError').classList.remove('show');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function genRef(){
+    const year = new Date().getFullYear();
+    const rand = Math.random().toString(36).slice(2,7).toUpperCase();
+    return `HMB-${year}-${rand}`;
+  }
+
+  els.submitBtn.addEventListener('click', async ()=>{
+    if(!validateStep(3)) return;
+    els.submitBtn.disabled = true;
+    els.submitBtn.textContent = "Submitting…";
+
+    const ref = genRef();
+    const application = {
+      ref, submittedAt: new Date().toISOString(),
+      fullName: document.getElementById('fullName').value.trim(),
+      address: document.getElementById('address').value.trim(),
+      mobile: document.getElementById('mobile').value.trim(),
+      email: document.getElementById('email').value.trim(),
+      position: document.getElementById('position').value,
+      positionOther: document.getElementById('positionOther').value.trim(),
+      expectedSalary: document.getElementById('expectedSalary').value,
+      company: document.getElementById('company').value.trim(),
+      empPosition: document.getElementById('empPosition').value.trim(),
+      currentSalary: document.getElementById('currentSalary').value,
+      startDate: document.getElementById('startDate').value,
+      endDate: document.getElementById('currentlyWorking').checked ? 'Present' : document.getElementById('endDate').value,
+      yearsExperience: document.getElementById('yearsExperience').value,
+      tools: Array.from(document.querySelectorAll('#toolsGrid input:checked')).map(c=>c.value),
+      toolsOther: document.getElementById('toolsOtherCheck').checked ? document.getElementById('toolsOther').value.trim() : '',
+      strengths: document.getElementById('strengths').value.trim(),
+      currentlyEmployed: document.querySelector('input[name=currentlyEmployed]:checked')?.value || '',
+      startAvailability: document.getElementById('startAvailability').value,
+      otherApplications: document.querySelector('input[name=otherApplications]:checked')?.value || '',
+      otherApplicationsDetail: document.getElementById('otherApplicationsDetail').value.trim(),
+      resumeFileName: resumeData?.fileName || '',
+      resumeFileSizeKB: resumeData?.fileSizeKB || 0,
+      resumeDataUrl: resumeData?.dataUrl || ''
+    };
+
+    try{
+      const result = await window.storage.set('applications:'+ref, JSON.stringify(application), true);
+      if(!result) throw new Error('Storage returned null');
+      showConfirmation(ref);
+    } catch(err){
+      els.submitBtn.disabled = false;
+      els.submitBtn.textContent = "Submit application";
+      alert("We couldn't save your application — please check your connection and try again. If this keeps happening, email your details to careers@hmbconsultancy.ph.");
+    }
+  });
+
+  function showConfirmation(ref){
+    document.getElementById('refDisplay').textContent = ref;
+    document.getElementById('stampRefMini').textContent = ref;
+    els.appView.classList.add('hidden');
+    els.confirmation.classList.remove('hidden');
+    window.scrollTo({top:0});
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    document.getElementById('appForm').reset();
+    resumeData = null;
+    uploadBox.classList.remove('has-file');
+    document.getElementById('uploadText').textContent = "Tap to choose a file, or drag it here";
+    document.getElementById('uploadFilename').textContent = "";
+    document.querySelectorAll('.invalid').forEach(e=>e.classList.remove('invalid'));
+    document.querySelectorAll('.field-error.show').forEach(e=>e.classList.remove('show'));
+    currentStep = 0;
+    renderProgress();
+    els.submitBtn.disabled = false;
+    els.submitBtn.textContent = "Submit application";
+    els.confirmation.classList.add('hidden');
+    els.appView.classList.remove('hidden');
+  });
+
+  // ---- STAFF AREA ----
+  const staffGate = document.getElementById('staffGate');
+  const staffPanel = document.getElementById('staffPanel');
+
+  document.getElementById('staffLink').addEventListener('click', ()=>{
+    document.getElementById('gatePasscode').value = '';
+    document.getElementById('gateError').classList.remove('show');
+    staffGate.classList.remove('hidden');
+  });
+  document.getElementById('gateCancel').addEventListener('click', ()=> staffGate.classList.add('hidden'));
+  document.getElementById('gateSubmit').addEventListener('click', enterStaff);
+  document.getElementById('gatePasscode').addEventListener('keydown', e=>{ if(e.key==='Enter') enterStaff(); });
+
+  function enterStaff(){
+    const val = document.getElementById('gatePasscode').value;
+    if(val === STAFF_PASSCODE){
+      staffGate.classList.add('hidden');
+      staffPanel.classList.remove('hidden');
+      loadLedger();
+    } else {
+      document.getElementById('gateError').classList.add('show');
+    }
+  }
+  document.getElementById('closeStaff').addEventListener('click', ()=> staffPanel.classList.add('hidden'));
+
+  // QR generator
+  let qrInstance = null;
+  document.getElementById('generateQrBtn').addEventListener('click', ()=>{
+    const url = document.getElementById('qrUrlInput').value.trim();
+    const out = document.getElementById('qrOutput');
+    out.innerHTML = '';
+    if(!url){ out.innerHTML = '<p class="field-error show">Paste a URL first.</p>'; return; }
+    new QRCode(out, {text:url, width:220, height:220, colorDark:'#1F4D3D', colorLight:'#ffffff', correctLevel:QRCode.CorrectLevel.M});
+    document.getElementById('downloadQrBtn').classList.remove('hidden');
+  });
+  document.getElementById('downloadQrBtn').addEventListener('click', ()=>{
+    const out = document.getElementById('qrOutput');
+    const canvas = out.querySelector('canvas');
+    const img = out.querySelector('img');
+    const link = document.createElement('a');
+    link.download = 'hmb-careers-qr.png';
+    if(canvas){ link.href = canvas.toDataURL('image/png'); }
+    else if(img){ link.href = img.src; }
+    else { return; }
+    link.click();
+  });
+
+  // ledger
+  let loadedApps = [];
+  async function loadLedger(){
+    const body = document.getElementById('ledgerBody');
+    const empty = document.getElementById('ledgerEmpty');
+    const countLabel = document.getElementById('ledgerCount');
+    countLabel.textContent = "Loading…";
+    body.innerHTML = '';
+    try{
+      const list = await window.storage.list('applications:', true);
+      const keys = list?.keys || [];
+      const apps = [];
+      for(const k of keys){
+        try{
+          const r = await window.storage.get(k, true);
+          if(r?.value) apps.push(JSON.parse(r.value));
+        }catch(e){}
+      }
+      apps.sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
+      loadedApps = apps;
+      countLabel.textContent = `${apps.length} application${apps.length===1?'':'s'} received`;
+      empty.classList.toggle('hidden', apps.length>0);
+      body.innerHTML = apps.map((a,i)=>renderRow(a,i)).join('');
+      document.querySelectorAll('.app-row').forEach(row=>{
+        row.addEventListener('click', ()=> toggleDetail(row));
+      });
+    }catch(e){
+      countLabel.textContent = "Couldn't load applications.";
+    }
+  }
+
+  function renderRow(a,i){
+    const date = new Date(a.submittedAt);
+    const dateStr = date.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+    return `<tr class="app-row" data-i="${i}">
+        <td style="font-family:var(--mono);">${a.ref}</td>
+        <td>${escapeHtml(a.fullName)}</td>
+        <td>${escapeHtml(a.position===''?'':(a.position==='Other'?a.positionOther:a.position))}</td>
+        <td>${escapeHtml(a.mobile)}</td>
+        <td>${dateStr}</td>
+      </tr>
+      <tr class="detail-row hidden" data-detail="${i}"><td colspan="5">${renderDetail(a)}</td></tr>`;
+  }
+
+  function renderDetail(a){
+    const resumeLink = a.resumeDataUrl
+      ? `<a href="${a.resumeDataUrl}" download="${escapeHtml(a.resumeFileName)}">${escapeHtml(a.resumeFileName)} (${a.resumeFileSizeKB} KB) — download</a>`
+      : (a.resumeFileName ? escapeHtml(a.resumeFileName)+' (too large to store — emailed separately)' : 'Not provided');
+    return `<div class="detail-grid">
+      <div><b>Email</b>${escapeHtml(a.email)}</div>
+      <div><b>Address</b>${escapeHtml(a.address)}</div>
+      <div><b>Expected salary</b>₱${escapeHtml(a.expectedSalary)}</div>
+      <div><b>Current employer</b>${escapeHtml(a.company)} — ${escapeHtml(a.empPosition)}</div>
+      <div><b>Current salary</b>₱${escapeHtml(a.currentSalary)}</div>
+      <div><b>Employment period</b>${escapeHtml(a.startDate)} to ${escapeHtml(a.endDate)}</div>
+      <div><b>Years of experience</b>${escapeHtml(a.yearsExperience)}</div>
+      <div><b>Tools</b>${escapeHtml([...(a.tools||[]), a.toolsOther].filter(Boolean).join(', '))}</div>
+      <div><b>Key strengths</b>${escapeHtml(a.strengths)}</div>
+      <div><b>Currently employed</b>${escapeHtml(a.currentlyEmployed)}</div>
+      <div><b>Can start</b>${escapeHtml(a.startAvailability)}</div>
+      <div><b>Other applications</b>${escapeHtml(a.otherApplications)} ${a.otherApplicationsDetail ? '— '+escapeHtml(a.otherApplicationsDetail) : ''}</div>
+      <div style="grid-column:1/-1;"><b>Resume</b>${resumeLink}</div>
+    </div>`;
+  }
+
+  function toggleDetail(row){
+    const i = row.dataset.i;
+    const detail = document.querySelector(`tr[data-detail="${i}"]`);
+    if(detail) detail.classList.toggle('hidden');
+  }
+
+  function escapeHtml(s){
+    if(s===undefined || s===null) return '';
+    return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  document.getElementById('refreshBtn').addEventListener('click', loadLedger);
+
+  document.getElementById('exportCsvBtn').addEventListener('click', ()=>{
+    if(loadedApps.length===0) return;
+    const cols = ['ref','submittedAt','fullName','email','mobile','address','position','positionOther','expectedSalary','company','empPosition','currentSalary','startDate','endDate','yearsExperience','tools','toolsOther','strengths','currentlyEmployed','startAvailability','otherApplications','otherApplicationsDetail','resumeFileName'];
+    const rows = [cols.join(',')];
+    loadedApps.forEach(a=>{
+      const row = cols.map(c=>{
+        let v = a[c];
+        if(Array.isArray(v)) v = v.join('; ');
+        v = (v===undefined||v===null) ? '' : String(v);
+        return '"' + v.replace(/"/g,'""') + '"';
+      });
+      rows.push(row.join(','));
+    });
+    const blob = new Blob([rows.join('\n')], {type:'text/csv'});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'hmb-applications.csv';
+    link.click();
+  });
+
+})();
+</script>
+</body>
+</html>
